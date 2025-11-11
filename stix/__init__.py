@@ -1,6 +1,29 @@
 # Copyright (c) 2017, The MITRE Corporation. All rights reserved.
 # See LICENSE.txt for complete terms.
 
+import sys
+import types
+
+# Python 3.13 removes the stdlib distutils package. Dependencies such as
+# mixbox still import ``distutils.version.StrictVersion`` so we alias the
+# copy vendored by setuptools when the stdlib variant is unavailable.
+try:  # pragma: no cover -- only executes on 3.13+
+    import distutils.version  # noqa: F401
+except ModuleNotFoundError:  # pragma: no cover
+    try:
+        from setuptools._distutils import version as _distutils_version
+    except Exception as exc:
+        raise ImportError(
+            "python-stix requires distutils.version but it is unavailable. "
+            "Install setuptools>=65 or vendor a replacement implementation."
+        ) from exc
+
+    distutils_module = types.ModuleType("distutils")
+    distutils_module.__path__ = []  # make it behave like a package
+    distutils_module.version = _distutils_version
+    sys.modules.setdefault("distutils", distutils_module)
+    sys.modules["distutils.version"] = _distutils_version
+
 # Make sure base gets imported before common.
 from .base import (Entity, EntityList, TypedCollection, TypedList,  # noqa
                    BaseCoreComponent)
@@ -135,4 +158,3 @@ def supported_stix_version():
 
     """
     return ('1.1.1', '1.2')
-

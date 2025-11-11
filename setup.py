@@ -33,6 +33,7 @@ install_requires = [
     'mixbox>=1.0.4',
     'cybox>=2.1.0.13,<2.1.1.0',
     'python-dateutil',
+    'setuptools>=65',
 ]
 
 
