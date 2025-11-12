@@ -1,3 +1,7 @@
+Version 1.2.0.11.post1
+2025-11-11
+- Provide Python 3.13 compatibility shim for distutils.version imports
+
 Version 1.2.0.11
 2020-11-16
 - #367 Fix deprecation warning from collections module
